@@ -1,0 +1,100 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+
+class Kohana_Formaid {
+	// Which form field is being modified
+	protected $active_field = -1;
+	
+	// The form fields
+	protected $fields = array();
+	
+	// Valid field types
+	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit'); //  radio, image, button, checkbox
+	
+	// Parameters
+	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode');
+	
+	// Where the views are stored
+	const VIEW_FOLDER = 'forms';
+	
+	/* Primary functions */
+	public static function factory()
+	{
+		return new Formaid;
+	}
+	
+	public function __call($name, $args)
+	{
+		$value = $args[0];
+		
+		if ( in_array($name, $this->field_types) )
+		{
+			return $this->new_field($name, $value);
+		}
+		else
+		{
+			return $this->set_param($name, $value);
+		}
+	}
+	
+	public function render()
+	{
+		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'open');		
+				
+		foreach ( $this->fields as $field )
+		{
+			// Set defaults
+			foreach ($this->params as $val)
+			{
+				if ( ! isset($field[$val]))
+			    {
+			        $field[$val] = NULL;
+			    }
+			}
+			
+			// Grab the view of that type
+			$view = View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.$field['type']);
+			
+			// Set variables
+			foreach( $field as $key => $value )
+			{
+				$view->set($key, $value);
+			}
+			
+			echo $view;
+		}
+		
+		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'close');
+	}
+	
+	/* Special Cases */
+	
+	public function submit($value = 'Submit')
+	{
+		return $this->new_field('submit', NULL)->value($value);	
+	}
+	
+	/* Helper Functions */
+	private function new_field($type, $name)
+	{		
+		$this->fields[] = array('type' => $type, 'name' => $name);
+		$this->active_field++;
+		
+		return $this;
+	}
+	
+	private function set_param($key, $value)
+	{
+		$active = $this->active_field;
+		
+		if ( in_array($key, $this->params) )
+		{
+			$this->fields[$active][$key] = $value;
+		}
+		else
+		{
+			$this->fields[$active]['attributes'][$key] = $value;
+		}
+		
+		return $this;
+	}
+}
