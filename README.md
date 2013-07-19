@@ -13,7 +13,7 @@ Install like any other Kohana module:
 
 Usage
 ----------
-Formaid::factory()
-	->text('name')->label('Name')
-	->submit()
-	->render();
+	Formaid::factory()
+		->text('name')->label('Name')
+		->submit()
+		->render();
