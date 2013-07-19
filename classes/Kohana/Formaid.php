@@ -7,6 +7,9 @@ class Kohana_Formaid {
 	// The form fields
 	protected $fields = array();
 	
+	// Arguments to the Form::open call
+	protected $open_args;
+	
 	// Valid field types
 	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit'); //  radio, image, button, checkbox
 	
@@ -14,12 +17,17 @@ class Kohana_Formaid {
 	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode');
 	
 	// Where the views are stored
-	const VIEW_FOLDER = 'forms';
+	const VIEW_FOLDER = 'formaid';
 	
 	/* Primary functions */
-	public static function factory()
+	public static function factory($action = NULL, $attributes = NULL)
 	{
-		return new Formaid;
+		return new Formaid($action, $attributes);
+	}
+	
+	public function __construct($action = NULL, $attributes = NULL)
+	{
+		$this->open_args = array($action, $attributes);
 	}
 	
 	public function __call($name, $args)
@@ -38,7 +46,9 @@ class Kohana_Formaid {
 	
 	public function render()
 	{
-		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'open');		
+		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'open')
+			->set('action', $this->open_args[0])
+			->set('attributes', $this->open_args[1]);		
 				
 		foreach ( $this->fields as $field )
 		{

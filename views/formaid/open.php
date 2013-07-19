@@ -1,2 +1,2 @@
-<?php echo Form::open(); ?>
+<?php echo Form::open($action, $attributes); ?>
 
