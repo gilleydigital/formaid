@@ -30,10 +30,12 @@ class Kohana_Formaid {
 		$this->open_args = array($action, $attributes);
 	}
 	
+	// Every function is either a field, a parameter, or an HTML attribute
 	public function __call($name, $args)
 	{
 		$value = $args[0];
 		
+		// Is it a field?
 		if ( in_array($name, $this->field_types) )
 		{
 			return $this->new_field($name, $value);
@@ -46,10 +48,12 @@ class Kohana_Formaid {
 	
 	public function render()
 	{
+		// Open the form
 		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'open')
 			->set('action', $this->open_args[0])
 			->set('attributes', $this->open_args[1]);		
-				
+		
+		// Traverse the fields
 		foreach ( $this->fields as $field )
 		{
 			// Set defaults
@@ -73,11 +77,12 @@ class Kohana_Formaid {
 			echo $view;
 		}
 		
+		
+		// Close
 		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'close');
 	}
 	
 	/* Special Cases */
-	
 	public function submit($value = 'Submit')
 	{
 		return $this->new_field('submit', NULL)->value($value);	
@@ -92,10 +97,12 @@ class Kohana_Formaid {
 		return $this;
 	}
 	
+	// If it's not explicitly a parameter (used in the function call), it's an HTML attribute
 	private function set_param($key, $value)
 	{
 		$active = $this->active_field;
 		
+		// Param?
 		if ( in_array($key, $this->params) )
 		{
 			$this->fields[$active][$key] = $value;
