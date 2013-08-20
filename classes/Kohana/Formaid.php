@@ -1,117 +1,89 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Kohana_Formaid {
-	// Which form field is being modified
-	protected $active_field = -1;
+	protected static $messages = array();
 	
-	// The form fields
-	protected $fields = array();
-	
-	// Arguments to the Form::open call
-	protected $open_args;
-	
-	// Valid field types
-	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit'); //  radio, image, button, checkbox
-	
-	// Parameters
-	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode');
-	
-	// Where the views are stored
-	const VIEW_FOLDER = 'formaid';
-	
-	/* Primary functions */
-	public static function factory($action = NULL, $attributes = NULL)
+	/* New form */
+	public static function form($action = NULL, $attributes = NULL)
 	{
-		return new Formaid($action, $attributes);
+		return new Formaid_Form($action, $attributes);
 	}
 	
-	public function __construct($action = NULL, $attributes = NULL)
+	/* Messaging */
+	public static function messages($module, $message_type, $message)
 	{
-		$this->open_args = array($action, $attributes);
-	}
+		$message_type = Request::current()->param($message_type);
+		$message = Request::current()->param($message);
 	
-	// Every function is either a field, a parameter, or an HTML attribute
-	public function __call($name, $args)
-	{
-		$value = $args[0];
-		
-		// Is it a field?
-		if ( in_array($name, $this->field_types) )
+		if ($message and ($message_type === 'success' or $message_type === 'error'))
 		{
-			return $this->new_field($name, $value);
-		}
-		else
-		{
-			return $this->set_param($name, $value);
+			Formaid::$message_type($module, $message);
 		}
 	}
-	
-	public function render()
+
+	public static function success($file, $path = NULL, $default = NULL)
 	{
-		// Open the form
-		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'open')
-			->set('action', $this->open_args[0])
-			->set('attributes', $this->open_args[1]);		
-		
-		// Traverse the fields
-		foreach ( $this->fields as $field )
+		return Formaid::add_message($file, $path, $default, 'success');
+	}
+
+	public static function error($file, $path = NULL, $default = NULL)
+	{
+		return Formaid::add_message($file, $path, $default, 'error');
+	}
+
+	public static function errors(array $errors)
+	{
+		$type = 'error';
+		foreach($errors AS $message)
 		{
-			// Set defaults
-			foreach ($this->params as $val)
+			Formaid::$messages[$type][] = $message;
+		}
+	
+		if ( ! View::get_global($type))
+		{
+			View::bind_global('form_result', Formaid::$messages);
+		}
+	}
+
+	/* Helpers */
+	protected static function add_message($file, $path, $default, $type)
+	{
+		if ( $message = Kohana::message($file, $path, $default))
+		{
+			Formaid::$messages[$type][] = $message;
+
+			if ( ! View::get_global($type))
 			{
-				if ( ! isset($field[$val]))
-			    {
-			        $field[$val] = NULL;
-			    }
+				View::bind_global('form_result', Formaid::$messages);
 			}
-			
-			// Grab the view of that type
-			$view = View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.$field['type']);
-			
-			// Set variables
-			foreach( $field as $key => $value )
+		
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	/* Flow control */
+	public static function post()
+	{
+		$post = Request::current()->post();
+		if (isset($post))
+		{
+			if (isset($post['is_posted']))
 			{
-				$view->set($key, $value);
+				if ($post['is_posted'] === 'true')
+				{
+					unset($post['is_posted']);
+					return Validation::factory($post);
+				}
+				else{
+					return false;
+				}
 			}
-			
-			echo $view;
 		}
-		
-		
-		// Close
-		echo View::factory(Formaid::VIEW_FOLDER.DIRECTORY_SEPARATOR.'close');
-	}
-	
-	/* Special Cases */
-	public function submit($value = 'Submit')
-	{
-		return $this->new_field('submit', NULL)->value($value);	
-	}
-	
-	/* Helper Functions */
-	private function new_field($type, $name)
-	{		
-		$this->fields[] = array('type' => $type, 'name' => $name);
-		$this->active_field++;
-		
-		return $this;
-	}
-	
-	// If it's not explicitly a parameter (used in the function call), it's an HTML attribute
-	private function set_param($key, $value)
-	{
-		$active = $this->active_field;
-		
-		// Param?
-		if ( in_array($key, $this->params) )
-		{
-			$this->fields[$active][$key] = $value;
+		else{
+			return false;
 		}
-		else
-		{
-			$this->fields[$active]['attributes'][$key] = $value;
-		}
-		
-		return $this;
 	}
 }
