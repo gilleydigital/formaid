@@ -13,7 +13,8 @@ Install like any other Kohana module:
 
 Usage
 ----------
-	Formaid::factory()
+	$form = Formaid::factory()
 		->text('name')->label('Name')
-		->submit()
-		->render();
+		->submit();
+
+	echo $form;

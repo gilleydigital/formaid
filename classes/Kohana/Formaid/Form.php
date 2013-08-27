@@ -37,10 +37,12 @@ class Kohana_Formaid_Form {
 		}
 	}
 	
-	public function render()
+	public function __toString()
 	{
+		$buffer = '';
+
 		// Open the form
-		echo View::factory('formaid'.DIRECTORY_SEPARATOR.'open')
+		$buffer .= View::factory('formaid'.DIRECTORY_SEPARATOR.'open')
 			->set('action', $this->open_args[0])
 			->set('attributes', $this->open_args[1]);		
 		
@@ -65,11 +67,13 @@ class Kohana_Formaid_Form {
 				$view->set($key, $value);
 			}
 			
-			echo $view;
+			$buffer .= $view;
 		}
 		
 		// Close
-		echo View::factory('formaid'.DIRECTORY_SEPARATOR.'close');
+		$buffer .= View::factory('formaid'.DIRECTORY_SEPARATOR.'close');
+		
+		return $buffer;
 	}
 	
 	/* Special Cases */
