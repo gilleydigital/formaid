@@ -11,7 +11,7 @@ class Kohana_Formaid_Form {
 	protected $open_args;
 	
 	// Valid field types
-	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit'); //  radio, image, button, checkbox
+	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html'); //  radio, image, button, checkbox
 	
 	// Parameters
 	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode');
@@ -68,7 +68,6 @@ class Kohana_Formaid_Form {
 			echo $view;
 		}
 		
-		
 		// Close
 		echo View::factory('formaid'.DIRECTORY_SEPARATOR.'close');
 	}
@@ -94,7 +93,7 @@ class Kohana_Formaid_Form {
 		$active = $this->active_field;
 		
 		// Param?
-		if ( in_array($key, $this->params) )
+		if (in_array($key, $this->params))
 		{
 			$this->fields[$active][$key] = $value;
 		}
