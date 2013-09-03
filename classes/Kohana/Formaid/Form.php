@@ -11,10 +11,10 @@ class Kohana_Formaid_Form {
 	protected $open_args;
 	
 	// Valid field types
-	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html'); //  radio, image, button, checkbox
+	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html', 'checkbox'); //  radio, image, button
 	
 	// Parameters
-	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode');
+	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode', 'checked');
 	
 	public function __construct($action = NULL, $attributes = NULL)
 	{
