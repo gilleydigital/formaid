@@ -11,10 +11,7 @@ class Kohana_Formaid {
 	
 	/* Messaging */
 	public static function messages($module, $message_type, $message)
-	{
-		$message_type = Request::current()->param($message_type);
-		$message = Request::current()->param($message);
-	
+	{	
 		if ($message and ($message_type === 'success' or $message_type === 'error'))
 		{
 			Formaid::$message_type($module, $message);
