@@ -103,7 +103,14 @@ class Kohana_Formaid_Form {
 		}
 		else
 		{
-			$this->fields[$active]['attributes'][$key] = $value;
+			if ($key = 'class' and isset($this->fields[$active]['attributes']) and isset($this->fields[$active]['attributes']['class']))
+			{
+				$this->fields[$active]['attributes'][$key] .= ' '.$value;
+			}
+			else
+			{
+				$this->fields[$active]['attributes'][$key] = $value;
+			}
 		}
 		
 		return $this;
