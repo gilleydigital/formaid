@@ -1,62 +1,60 @@
 // Form Fields
+.formaid {
+	.formfield {
+		margin: 7px 0;
 
-.formfield {
-	margin: 7px 0;
-	
-	input, textarea {
-		background: #e1e1e1;
-		padding: 3px;
-		border: 1px solid #373737;
+		label {
+			display: block
+		}
 	}
 
-	textarea {
-		width: 300px;
-		height: 45px;
+	.formfield-textlike {
+		input {
+			padding: 3px;		
+		}
 	}
-	
-	label {
-		display: block;
-		float: left;
-		width: 150px;
+
+	.formfield-checkbox {
+		input {
+			float: left;
+			margin-right: 8px;
+		}
+
+		label {
+			float: left;
+		}
+
+		&:after {
+		    content: " ";
+		    display: table;
+		    clear: both;
+		}
 	}
-}
 
-.formfield-text, .formfield-password {
-	input {
-		width: 200px;
+	.formfield-submit {
+		background-color: #034769;
+
+		padding: 7px 20px;
+		border: 0;
+
+		color: #fff;
+
+		box-shadow: 2px 3px 5px -2px #444;
+		border-radius: 8px;
+		cursor: pointer;
+
+		&:hover {
+			background: #9C2F23;
+		}
 	}
-}
 
-.honeypot {
-	display: none;
-}
+	.honeypot {
+		display: none;
+	}
 
-.submit {
-	clear: left;
-
-	background-color: #034769;
-
-	padding: 7px;
-	margin-right: 25px;
-	border: 0;
-
-	color: #fff;
-	font-weight: bold;
-
-	box-shadow: 3px 4px 7px -2px #444;
-	border-radius: 10px;
-	cursor: pointer;
-}
-
-.submit:hover {
-	background: #9C2F23;
 }
 
 // Messages
-
-$error_color: #760000;
-$success_color: #1c9300;
-
 .result {
 	display: inline-block;
 	padding: 7px;
@@ -75,12 +73,12 @@ $success_color: #1c9300;
 
 .error {
 	background: #ffb0b0;
-	border-color: $error_color;
-	color: $error_color;
+	border-color: #760000;
+	color: #760000;
 }
 
 .success {
 	background: #bfffab;
-	border-color: $success_color;
-	color: $success_color;
+	border-color: #1c9300;
+	color: #1c9300;
 }

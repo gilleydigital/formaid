@@ -2,23 +2,25 @@
 
 class Kohana_Formaid_Form {
 	// Which form field is being modified
-	protected $active_field = -1;
+	protected $active_field = 0;
 	
 	// The form fields
 	protected $fields = array();
-	
-	// Arguments to the Form::open call
-	protected $open_args;
-	
+		
 	// Valid field types
 	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html', 'checkbox'); //  radio, image, button
 	
 	// Parameters
-	protected $params = array('name', 'label', 'value', 'attributes', 'options', 'double_encode', 'checked');
+	protected $params = array('action', 'name', 'label', 'value', 'attributes', 'options', 'double_encode', 'checked');
 	
 	public function __construct($action = NULL, $attributes = NULL)
 	{
-		$this->open_args = array($action, $attributes);
+		$this->fields[] = array(
+			'type' => 'open',
+			'attributes' => array(
+				'class' => 'formaid',
+			)
+		);
 	}
 	
 	// Every function is either a field, a parameter, or an HTML attribute
@@ -40,11 +42,6 @@ class Kohana_Formaid_Form {
 	public function __toString()
 	{
 		$buffer = '';
-
-		// Open the form
-		$buffer .= View::factory('formaid'.DIRECTORY_SEPARATOR.'open')
-			->set('action', $this->open_args[0])
-			->set('attributes', $this->open_args[1]);		
 		
 		// Traverse the fields
 		foreach ( $this->fields as $field )
@@ -79,7 +76,7 @@ class Kohana_Formaid_Form {
 	/* Special Cases */
 	public function submit($value = 'Submit')
 	{
-		return $this->new_field('submit', NULL)->value($value)->class('submit');	
+		return $this->new_field('submit', NULL)->value($value)->class('formfield-submit');	
 	}
 	
 	/* Helper Functions */
