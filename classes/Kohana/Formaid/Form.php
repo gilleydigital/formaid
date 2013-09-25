@@ -8,7 +8,7 @@ class Kohana_Formaid_Form {
 	protected $fields = array();
 		
 	// Valid field types
-	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html', 'checkbox'); //  radio, image, button
+	protected $field_types = array('text', 'hidden', 'password', 'file', 'textarea', 'select', 'submit', 'html', 'checkbox', 'honeypot'); //  radio, image, button
 	
 	// Parameters
 	protected $params = array('action', 'name', 'label', 'value', 'attributes', 'options', 'double_encode', 'checked');
@@ -77,6 +77,11 @@ class Kohana_Formaid_Form {
 	public function submit($value = 'Submit')
 	{
 		return $this->new_field('submit', NULL)->value($value)->class('formfield-submit');	
+	}
+
+	public function honeypot()
+	{
+		return $this->new_field('text', 'honeypot')->label('Leave this blank')->class('honeypot');
 	}
 	
 	/* Helper Functions */
